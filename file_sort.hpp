@@ -14,20 +14,20 @@ using namespace std;
 
 class B {
 public:
-	B(string name_main_file);
-	auto division()->void;
-	auto file_size(string name_file)->size_t;
-	auto make_file(string name_file)->void;
-	auto file_sort()->void;
-	auto write_to_out(string line)->void;
-	auto remove_temp_files()->void;
+	B(string name_main_file);//открываем исходный файл
+	auto division()->void; // разделение файла на подфайлы
+	auto file_size(string name_file)->size_t;//проверка размера файла
+	auto make_file(string name_file)->void;//создание временных файлов
+	auto file_sort()->void;//конечная сортировка временных файлов в выходной файл
+	auto write_to_out(string line)->void;//запись в выходной файл
+	auto remove_temp_files()->void;//удаление временных файлов
 	~B();
 private:
 	fstream file;
 	size_t buffer, count_of_files, closed_files;
 	bool out;
 	vector<string> lines;
-	vector<string> file_names;
+	vector<string> file_names;//имена временных файлов
 };
 
 B::~B() {
@@ -41,10 +41,11 @@ B::B(string name_main_file) :file(name_main_file), buffer(100), count_of_files(0
 	}
 };
 
-auto B::make_file(string name_file)->void {//TESTED
+auto B::make_file(string name_file)->void {
 	file_names.push_back(name_file);
 	std::sort(lines.begin(), lines.end());
 	ofstream temp(name_file);
+	if (!temp.is_open()) throw;
 	for (auto i : lines)
 	{
 		temp << i;
@@ -52,9 +53,9 @@ auto B::make_file(string name_file)->void {//TESTED
 	}
 	temp.close();
 	lines.clear();
-}//TESTED
+}
 
-auto B::file_size(string name_file)->size_t { // TESTED
+auto B::file_size(string name_file)->size_t { 
 	long fsize;
 	ifstream temp(name_file);
 	temp.seekg(0, ios::end);
@@ -65,7 +66,8 @@ auto B::file_size(string name_file)->size_t { // TESTED
 }
 
 auto B::write_to_out(string line)->void {//TESTED
-	ofstream file("out.txt", ios::app);
+	ofstream out("out.txt", ios::app);
+	if(!out.is_open) throw;
 	file << line << endl;
 	file.close();
 
